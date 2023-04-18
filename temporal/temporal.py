@@ -27,7 +27,7 @@ async def function_three():
 
 @activity.defn
 async def function_four():
-    # reset the file
+    # reset the file for the next run
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     f = open(os.path.join(__location__, "some_text.txt"), "w")
     f.close()

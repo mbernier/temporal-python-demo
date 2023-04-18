@@ -25,10 +25,6 @@ async def main():
             id="my-workflow",
             task_queue="default"
         )
-        
-        # reset file for next run
-        f = open("some_text.txt", "w")
-        f.close()
 
 if __name__ == "__main__":
     asyncio.run(main())
