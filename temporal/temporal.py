@@ -60,4 +60,3 @@ class MyWorkflow:
         )
 
         print(output)
-
