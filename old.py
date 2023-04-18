@@ -33,9 +33,15 @@ def run(counter:int):
     return output
 
 if __name__ == "__main__":
-    # counter += 1
-    print("\n## Run 1\n")
-    print(run(counter))
+    try:
+        print("## Run 1\n")
+        print(run(counter))
+    except Exception as err:
+        print("An exception occurred, this is the message received: ")
+        print(err)
+        counter += 1
+
     print("\n")
     print("## Run 2")
     print(run(counter))
+    print("\n")
