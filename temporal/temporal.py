@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from temporalio import activity, workflow
 
@@ -8,7 +9,8 @@ async def function_one():
 @activity.defn
 async def function_two():
     print("trying function two")
-    f = open("some_text.txt", "r+")
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    f = open(os.path.join(__location__, "some_text.txt"), "r+")
     content = f.read()
 
     if len(content) > 0 :
@@ -17,7 +19,7 @@ async def function_two():
 
     f.write("two")
     f.close()
-    raise Exception("😈😈😈 I am broken")
+    raise Exception("😈😈😈 I am broken\n\n")
 
 @activity.defn
 async def function_three(): 
@@ -25,6 +27,11 @@ async def function_three():
 
 @activity.defn
 async def function_four():
+    # reset the file
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    f = open(os.path.join(__location__, "some_text.txt"), "w")
+    f.close()
+    # return what we need here
     return "four"
 
 @workflow.defn
@@ -53,3 +60,4 @@ class MyWorkflow:
         )
 
         print(output)
+
