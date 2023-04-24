@@ -49,13 +49,8 @@ if __name__ == "__main__":
     workflow = MyWorkflow()
 
     try:
-        print("## Run 1\n")
+        print("## Run the old way\n")
         print(workflow.run())
     except Exception as err:
         print("An exception occurred, this is the message received: ")
         print(err)
-
-    print("\n")
-    print("## Run 2")
-    print(workflow.run())
-    print("\n")

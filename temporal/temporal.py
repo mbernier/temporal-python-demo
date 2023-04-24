@@ -14,7 +14,7 @@ async def function_two():
     content = f.read()
 
     if len(content) > 0 :
-        time.sleep(15)
+        time.sleep(15) # this is here to give you time to switch over and show the Web UI
         f.close()
         return content
 
