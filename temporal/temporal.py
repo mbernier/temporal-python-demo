@@ -1,4 +1,4 @@
-import os
+import os, time
 from datetime import timedelta
 from temporalio import activity, workflow
 
@@ -14,6 +14,7 @@ async def function_two():
     content = f.read()
 
     if len(content) > 0 :
+        time.sleep(15)
         f.close()
         return content
 
@@ -41,22 +42,22 @@ class MyWorkflow:
     async def run(self, var:str = None):
         output = await workflow.execute_activity(
             function_one,
-            start_to_close_timeout=timedelta(seconds=3)
+            start_to_close_timeout=timedelta(seconds=30)
         )
 
         output += " " + await workflow.execute_activity(
             function_two,
-            start_to_close_timeout=timedelta(seconds=3)
+            start_to_close_timeout=timedelta(seconds=20)
         )
         
         output += " " + await workflow.execute_activity(
             function_three,
-            start_to_close_timeout=timedelta(seconds=3)
+            start_to_close_timeout=timedelta(seconds=30)
         )
 
         output += " " + await workflow.execute_activity(
             function_four,
-            start_to_close_timeout=timedelta(seconds=3)
+            start_to_close_timeout=timedelta(seconds=30)
         )
 
         print(output)

@@ -22,7 +22,7 @@ async def main():
 
         result = await temporal_client.execute_workflow(
             MyWorkflow.run,
-            id="my-workflow",
+            id="my-workflow-2",
             task_queue="default"
         )
 
