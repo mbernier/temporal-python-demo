@@ -1,39 +1,31 @@
-import os, time
+from common.common import read_resource
 from datetime import timedelta
 from temporalio import activity, workflow
 
+sleep_time_seconds = 10
+
 @activity.defn
 async def function_one():
-    return "one"
+    return read_resource("one")
 
 @activity.defn
 async def function_two():
-    print("trying function two")
-    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    f = open(os.path.join(__location__, "some_text.txt"), "r+")
-    content = f.read()
+    content = read_resource("two")
 
-    if len(content) > 0 :
-        time.sleep(15) # this is here to give you time to switch over and show the Web UI
-        f.close()
-        return content
+    if content != "two":
+        raise Exception(f"\n\n😈😈😈 I am broken, because I expected 'two' in the content, but found '{content}' \n\n")
 
-    f.write("two")
-    f.close()
-    raise Exception("😈😈😈 I am broken\n\n")
+    return content
 
 @activity.defn
 async def function_three(): 
-    return "three"
+    return read_resource("three")
 
 @activity.defn
 async def function_four():
-    # reset the file for the next run
-    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    f = open(os.path.join(__location__, "some_text.txt"), "w")
-    f.close()
     # return what we need here
-    return "four"
+    return read_resource("four")
+
 
 @workflow.defn
 class MyWorkflow:
@@ -60,4 +52,4 @@ class MyWorkflow:
             start_to_close_timeout=timedelta(seconds=30)
         )
 
-        print(output)
+        return output

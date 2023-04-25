@@ -1,42 +1,41 @@
-import os
+import time
+from common.common import read_resource_old
 
 def function_one():
-    return "one"
+    return read_resource_old("one")
 
 def function_two():
-    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    f = open(os.path.join(__location__, "some_text.txt"), "r+")
-    content = f.read()
-    
-    if len(content) > 0:
-        f.close()
-        return "two"
-    
-    f.write("two")
-    f.close()
-    raise Exception("😈😈😈 I am broken")
+    content = read_resource_old("two")
 
-def function_three(): 
-    return "three"
+    print(f"content is {content}")
+
+    if content != "two":
+        raise Exception(f"\n\n😈😈😈 I am broken, because I expected 'two' in the content, but found '{content}' \n\n")
+
+    return content
+
+def function_three():
+    return read_resource_old("three")
 
 def function_four():
-    # reset the file for the next run
-    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    f = open(os.path.join(__location__, "some_text.txt"), "w")
-    f.close()
-    return "four"
+    return read_resource_old("four")
 
 counter = 0
 class MyWorkflow: 
 
-    def run(self):
+    def run(self, try_again=False):
         # returns "one"
         output = function_one()
 
         # returns "two", counter
         # throws exception if counter <= 0, to simulate a failed process downstream
-        new_output = function_two()
-        output += " " + new_output
+        try:
+            output = " " + function_two()
+        except Exception as err:
+            if try_again:
+                output = " " +function_two()
+            else:
+                raise err
 
         # returns "three"
         output += " " + function_three()
@@ -54,3 +53,7 @@ if __name__ == "__main__":
     except Exception as err:
         print("An exception occurred, this is the message received: ")
         print(err)
+        
+        print("\n\nWe are going to try to run this again...")
+        time.sleep(3)
+        print(workflow.run(True))
