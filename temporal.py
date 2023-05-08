@@ -26,7 +26,6 @@ async def function_four():
     # return what we need here
     return read_resource("four")
 
-
 @workflow.defn
 class MyWorkflow:
 

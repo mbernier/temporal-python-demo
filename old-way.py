@@ -1,11 +1,11 @@
 import time
-from common.common import read_resource_old
+import common.common as common
 
 def function_one():
-    return read_resource_old("one")
+    return common.read_resource_old("one")
 
 def function_two():
-    content = read_resource_old("two")
+    content = common.read_resource_old("two")
 
     print(f"content is {content}")
 
@@ -15,12 +15,11 @@ def function_two():
     return content
 
 def function_three():
-    return read_resource_old("three")
+    return common.read_resource_old("three")
 
 def function_four():
-    return read_resource_old("four")
+    return common.read_resource_old("four")
 
-counter = 0
 class MyWorkflow: 
 
     def run(self, try_again=False):
