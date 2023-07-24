@@ -3,21 +3,19 @@ Comparing coding with Temporal and not Temporal
 
 This script looks at a remote file for a specific string. If it is not there, an exception is thrown. The old-way,.py will handle this with try...except and Temporal will handle this gracefully with a backoff and retry.
 
-## old-way
-This is a file that creates a string from concatenating the ouput of a series of functions when `python old-way.py` has been run.
-You will see that the first run throws an exception, because the remote file does not have the expected data.
-Then, on the second run, it will work because the file has been updated with the correct expected data.
 
-## temporal
-This shows how to add [Temporal python sdk](https://github.com/temporalio/sdk-python) to make the code durable.
-It will run the same methods, and uses a "potentially" async file to control whether the exception is thrown.
-Then, when the file gets updated, the code executes properly on a automatic retry from Temporal.
+## orders.py
+Will simulate getting an order event, looking to see if the customer ID exists in the database and holding the order until that customer ID does exist.
+It is looking in the file where customer data is stored by customers.py, if it doesn't find the randomly generated email, it will retry until it does find it.
 
-To run:
+## customer.py
+Writes the customer data to the data store, in this case a file. But it has a 3 second sleep, so that orders.py gets backed up waiting for the customer ID to show up.
+
+## workflow.py
+Connects to the workflows or creates them, simultes a script that accepts events from a webhook or other source. This same code could be inserted into an API endpoint if you wanted.
+
+# To run this example
 1. Start your [Temporal Server](https://github.com/temporalio/cli)
-2. Run `python worker.py`
+2. In one terminal window: `python worker.py` - starts the worker that hangs out waiting for tasks
+3. In a second terminal window: `python workflow.py` - runs the workflow start code that makes everything happen
 
-You will see that the first run throws an exception, because the remote file does not have the expected data.
-Then, on the second run, it will work because the file has been updated with the correct expected data.
-
-The difference is that Temporal will automatically retry to run your workflow, with a small incremental backoff.
