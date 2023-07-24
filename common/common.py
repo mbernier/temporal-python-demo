@@ -1,4 +1,4 @@
-import os, time, uuid
+import os, time, uuid, json
 
 sleep_time_seconds = 10
 
@@ -6,7 +6,6 @@ def read_resource_old(value=None, old=False):
     return read_resource(value, True)
 
 def read_resource(value=None, old=False):
-    print(f"\nRunning function {value}")
     file_location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     if value == "four" or value == "one": # reset the file for the next run
@@ -32,13 +31,15 @@ Wouldn't your job (and your code) be so much simpler if this wasn't necessary?\n
 
 def write_customer(customer_data):
     # create the customer ID for demo purposes here
-    customer_data['id'] = uuid.uuid()
-    
+    data = {
+        customer_data['email']: str(uuid.uuid4())
+    }
+
     # write the data to the storage
-    read_resource(value=customer_data['id'])
+    read_resource(value=json.dumps(data))
 
     # return the customer_id
-    return customer_data['id']
+    return data[customer_data['email']]
 
 def check_resource():
     read_resource("two")
