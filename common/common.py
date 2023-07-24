@@ -1,4 +1,4 @@
-import os, time
+import os, time, uuid
 
 sleep_time_seconds = 10
 
@@ -22,10 +22,23 @@ Wouldn't your job (and your code) be so much simpler if this wasn't necessary?\n
             else:
                 print(f"I am sleeping for {sleep_time_seconds} seconds, so the person demoing can show off the UI. Cmd+click here: http://127.0.0.1:8233\n")
             print_sleep(sleep_time_seconds) #output the fancy sleep time thing
-    else:
+    elif value != None:
+        # Don't write the file if the data is none
         write_file(file_location, value)
+    else:
+        value = read_file(file_location)
 
     return value
+
+def write_customer(customer_data):
+    # create the customer ID for demo purposes here
+    customer_data['id'] = uuid.uuid()
+    
+    # write the data to the storage
+    read_resource(value=customer_data['id'])
+
+    # return the customer_id
+    return customer_data['id']
 
 def check_resource():
     read_resource("two")
