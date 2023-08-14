@@ -1,6 +1,10 @@
 from common.common import read_resource
 from datetime import timedelta
 from temporalio import activity, workflow
+import asyncio
+from temporalio import service, exceptions
+from temporalio.client import Client
+from temporalio.common import RetryPolicy
 
 sleep_time_seconds = 10
 
@@ -51,4 +55,38 @@ class MyWorkflow:
             start_to_close_timeout=timedelta(seconds=30)
         )
 
+        print(f"\n\nThe end response: \n\n{output}\n\n")
         return output
+
+
+async def run_workflow():
+    temporal_client = await Client.connect("localhost:7233", namespace="default")
+    
+    retryPolicy = RetryPolicy(
+        initial_interval=timedelta(minutes=2),
+        backoff_coefficient=float(1.0),
+        maximum_interval=timedelta(minutes=50),
+        maximum_attempts=4
+    )
+
+    try:
+        print("\n\nAttempting to create a new Workflow...")
+        workflow_handle = await temporal_client.start_workflow(
+            MyWorkflow.run,
+            id="my-workflow-2",
+            task_queue="default",
+            retry_policy=retryPolicy
+        )
+    except exceptions.WorkflowAlreadyStartedError as err:
+        print("Workflow was already running, getting the handle...")
+        workflow_handle = temporal_client.get_workflow_handle_for(
+            MyWorkflow.run,
+            "my-workflow-2"
+        )
+    
+    print("Running the workflow")
+    result = await workflow_handle.result()
+    print("Workflow complete\n\n")
+
+if __name__ == "__main__":
+    asyncio.run(run_workflow())

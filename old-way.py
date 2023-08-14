@@ -29,10 +29,10 @@ class MyWorkflow:
         # returns "two", counter
         # throws exception if counter <= 0, to simulate a failed process downstream
         try:
-            output = " " + function_two()
+            output += " " + function_two()
         except Exception as err:
             if try_again:
-                output = " " +function_two()
+                output += " " +function_two()
             else:
                 raise err
 
